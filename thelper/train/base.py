@@ -129,7 +129,7 @@ class Trainer(SessionRunner):
                  ):
         super(Trainer, self).__init__(session_name, session_dir, model, task, loaders, config, ckptdata=ckptdata)
 
-    def train(self):
+    def train(self, my_opt = None):
         """Starts the training process.
 
         This function will train the model until the required number of epochs is reached, and then evaluate it
@@ -142,6 +142,8 @@ class Trainer(SessionRunner):
         self.logger.debug(f"uploading model to '{str(self.devices)}'...")
         model = self._upload_model(self.model, self.devices)
         loss, optimizer, scheduler, scheduler_step_metric = self._load_optimization(model, self.devices)
+        if my_opt is not None:
+            optimizer = my_opt
         if optimizer is not None and self.optimizer_state is not None:
             optimizer.load_state_dict(self.optimizer_state)
             self.optimizer_state = None
